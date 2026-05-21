@@ -22,30 +22,41 @@ credit-review-platform/
 - Python 3.12+
 - Node.js 18+
 
-### Backend
+**You need two terminals** — the frontend proxies API calls to the backend on port 8000. If only Vite is running, you will see `ECONNREFUSED` on `/entities/resolve`.
+
+### Terminal 1 — Backend
 
 ```bash
-cd credit-review-platform
+cd credit-review-platform    # project root, NOT frontend/
 cp .env.example .env
 pip install -e ".[dev]"
-uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+python3.12 -m uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### MCP Server (standalone)
+Or: `bash scripts/dev-api.sh`
+
+Verify: http://localhost:8000/health → `{"status":"ok",...}`
+
+### Terminal 2 — Frontend
 
 ```bash
-python -m mcp_server.server
-```
-
-### Frontend
-
-```bash
-cd frontend
+cd credit-review-platform/frontend
 npm install
 npm run dev
 ```
 
-Open http://localhost:5173 — API proxied to `:8000` via Vite.
+Or: `bash scripts/dev-frontend.sh`
+
+Open http://localhost:5173 — Vite proxies `/api/*` → `http://localhost:8000/*`
+
+> If your prompt already shows `frontend $`, you are inside `frontend/` — do not run `cd frontend` again.
+
+### MCP Server (standalone, optional)
+
+```bash
+cd credit-review-platform
+python -m mcp_server.server
+```
 
 ### Tests
 
